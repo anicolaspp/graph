@@ -34,8 +34,8 @@ func Gen(size int) []*G {
 		}
 
 		// Since the number of graphs exponentially increases, let's remove
-		// the generate i - 1 since we don't need it any more, and save some
-		// memory.
+		// the generation i - 1 since we don't need it any more, and save some
+		// (a lot) of memory.
 		delete(graphs, i-1)
 	}
 
