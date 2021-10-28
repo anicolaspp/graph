@@ -94,6 +94,9 @@ func Comb(nodes List, n int, r List, f *R) {
 // Comb([1,2], 2) -> [[1,2]]
 // Comb([1,2,3], 2) -> [[1,2],[1,3], [2,3]]
 // Comb([1,2,3], 3) -> [[1,2,3]]
+//
+// This is basically all Edges that needs to be connected to new node n,
+// each time creating a new graph.
 type R struct {
 	F [][]int
 }
