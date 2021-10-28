@@ -20,7 +20,7 @@ func main() {
 
 	fmt.Println("=======")
 
-	gs := graph.Gen(3)
+	gs := graph.Gen(10)
 
 	fmt.Println("=======")
 	fmt.Println(len(gs))

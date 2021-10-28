@@ -53,7 +53,6 @@ func add(g *G, n int) []*G {
 func addE(g *G, n int, c int) []*G {
 	f := &R{F: [][]int{}}
 	Comb(g.Nodes(), c, []int{}, f)
-	fmt.Printf("F = %v, c = %v\n", f, c)
 
 	res := []*G{}
 	for _, v := range f.F {
