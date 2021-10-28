@@ -6,10 +6,12 @@ import (
 	"sort"
 )
 
+// G is a graph represented by a list of edges.
 type G struct {
-	Es []E
+	Es []E // List of edges.
 }
 
+// Nodes returns the unique set of nodes [1..n]
 func (g *G) Nodes() []int {
 	nodes := map[int]bool{}
 	for _, e := range g.Es {
@@ -18,19 +20,21 @@ func (g *G) Nodes() []int {
 	}
 
 	res := []int{}
-	for k, _ := range nodes {
+	for k := range nodes {
 		res = append(res, k)
 	}
 
 	return res
 }
 
+// Cp copies the Graph G, to avoid issues with pass by values/reference.
 func (g *G) Cp() *G {
 	return &G{
 		Es: g.Es,
 	}
 }
 
+// String is a string representation of the graph G.
 func (g *G) String() string {
 	edges := []string{}
 	for _, e := range g.Es {
@@ -42,6 +46,7 @@ func (g *G) String() string {
 	return fmt.Sprintf("G(%v) = %v\n", len(g.Nodes()), edges)
 }
 
+// E is an undirected Graph Edge.
 type E struct {
 	A int
 	B int
