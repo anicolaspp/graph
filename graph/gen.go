@@ -22,21 +22,24 @@ func Gen(size int) []*G {
 		//
 		// If we have k graph of size n - 1, then we start k async processes
 		// where each of them creates multiple graphs by adding new node N.
-		for j := 0; j < len(graphs[i-1]); j++ {
-			// Async graph generation.
-			go genUsing(graphs[i-1][j], i, ch)
+		n := i                // new node N we are adding.
+		k := len(graphs[n-1]) // number of n - 1 graphs we have where we need to ad new node N.
+		for j := 0; j < k; j++ {
+			// k async processes.
+			go genUsing(graphs[n-1][j], n, ch)
 		}
 
-		// Aggregates all graph from all parallel processes
-		for j := 0; j < len(graphs[i-1]); j++ {
+		// Aggregates all graph from all parallel processes.
+		// Reads output from the k async processes.
+		for j := 0; j < k; j++ {
 			toAdd := <-ch
-			graphs[i] = append(graphs[i], toAdd...)
+			graphs[n] = append(graphs[n], toAdd...)
 		}
 
 		// Since the number of graphs exponentially increases, let's remove
-		// the generation i - 1 since we don't need it any more, and save some
+		// the generation n - 1 since we don't need it any more, and save some
 		// (a lot) of memory.
-		delete(graphs, i-1)
+		delete(graphs, n-1)
 	}
 
 	ch := make(chan *G)
