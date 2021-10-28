@@ -9,16 +9,7 @@ import (
 func main() {
 	fmt.Println("Hello...")
 
-	// f := &graph.R{F: map[string][]int{}}
-	// graph.Comb([]int{1, 2}, 1, []int{}, f)
-
-	// for i := 1; i <= 3; i++ {
-	// 	f := &graph.R{F: [][]int{}}
-	// 	graph.Comb([]int{1, 2, 3}, i, []int{}, f)
-	// 	fmt.Println(f)
-	// }
-
-	fmt.Println("=======")
+	fmt.Println("Running=======")
 
 	gs := graph.Gen(10)
 

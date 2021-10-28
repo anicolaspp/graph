@@ -5,6 +5,8 @@ import (
 	"sort"
 )
 
+// Gen generates all connected graphs of given size.
+// G(n) = AllGraphsOfSize(n - 1) + add(n).
 func Gen(size int) []*G {
 	graphs := map[int][]*G{}
 	graphs[1] = []*G{
@@ -42,6 +44,7 @@ func Gen(size int) []*G {
 	return xs
 }
 
+// add adds n to the graph g by using addE (adding all required edges).
 func add(g *G, n int) []*G {
 	res := []*G{}
 	for i := 1; i <= len(g.Nodes()); i++ {
@@ -50,6 +53,7 @@ func add(g *G, n int) []*G {
 	return res
 }
 
+// addE adds all the new edges from the new node n to the existing graph g.
 func addE(g *G, n int, c int) []*G {
 	f := &R{F: [][]int{}}
 	Comb(g.Nodes(), c, []int{}, f)
@@ -84,17 +88,12 @@ func Comb(nodes List, n int, r List, f *R) {
 	}
 }
 
-type M map[string][]int
-
-func (m M) String() string {
-	s := "{"
-	for k, v := range m {
-		s += fmt.Sprintf("%v -> %v,", k, v)
-	}
-	s += "}"
-	return s
-}
-
+// R.F contains all possible ways to select (n, x) where n is the
+// nodes (1..n), and x is increasing from (1..n).
+// Comb([1,2], 1) -> [[1],[2]]
+// Comb([1,2], 2) -> [[1,2]]
+// Comb([1,2,3], 2) -> [[1,2],[1,3], [2,3]]
+// Comb([1,2,3], 3) -> [[1,2,3]]
 type R struct {
 	F [][]int
 }
@@ -103,6 +102,7 @@ func (r *R) Add(x List) {
 	r.F = append(r.F, x.Cp())
 }
 
+// List is just array of int but we can have better object manipulations.
 type List []int
 
 func (l *List) String() string {
@@ -117,6 +117,7 @@ func (l *List) String() string {
 	return s
 }
 
+// Cp copies l into a new list.
 func (l List) Cp() List {
 	result := List{}
 	for i := 0; i < len(l); i++ {
