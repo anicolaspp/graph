@@ -15,33 +15,51 @@ func Gen(size int) []*G {
 		},
 	}
 	for i := 2; i <= size; i++ {
-		for _, g := range graphs[i-1] {
-			toAdd := add(g, i)
+		ch := make(chan []*G)
+
+		for j := 0; j < len(graphs[i-1]); j++ {
+			// Async graph generation.
+			go genUsing(graphs[i-1][j], i, ch)
+		}
+
+		// Aggregates all graph from all parallel processes
+		for j := 0; j < len(graphs[i-1]); j++ {
+			toAdd := <-ch
 			graphs[i] = append(graphs[i], toAdd...)
 		}
 	}
 
-	res := map[string]*G{}
+	ch := make(chan *G)
 	for _, g := range graphs[size] {
-		m := map[string]E{}
-		for _, e := range g.Es {
-			if _, ok := m[e.String()]; !ok && e.String() != "(1,1)" {
-				m[e.String()] = e
-			}
-		}
-		gg := &G{}
-		for _, e := range m {
-			gg.Es = append(gg.Es, e)
-		}
-		res[gg.String()] = gg
+		go clean(g, ch)
 	}
 
 	xs := []*G{}
-	for _, v := range res {
-		xs = append(xs, v)
+	for _ = range graphs[size] {
+		cleaned := <-ch
+		xs = append(xs, cleaned)
 	}
 
 	return xs
+}
+
+func genUsing(g *G, i int, ch chan<- []*G) {
+	toAdd := add(g, i)
+	ch <- toAdd
+}
+
+func clean(g *G, ch chan<- *G) {
+	m := map[string]E{}
+	for _, e := range g.Es {
+		if _, ok := m[e.String()]; !ok && e.String() != "(1,1)" {
+			m[e.String()] = e
+		}
+	}
+	gg := &G{}
+	for _, e := range m {
+		gg.Es = append(gg.Es, e)
+	}
+	ch <- gg
 }
 
 // add adds n to the graph g by using addE (adding all required edges).
