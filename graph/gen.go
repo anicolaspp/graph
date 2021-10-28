@@ -35,7 +35,7 @@ func Gen(size int) []*G {
 	}
 
 	xs := []*G{}
-	for _ = range graphs[size] {
+	for range graphs[size] {
 		cleaned := <-ch
 		xs = append(xs, cleaned)
 	}
