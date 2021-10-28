@@ -48,6 +48,9 @@ func (g *G) ToMatrix() [][]bool {
 		if m[e.A] == nil {
 			m[e.A] = make([]bool, n)
 		}
+		if m[e.B] == nil {
+			m[e.B] = make([]bool, n)
+		}
 		m[e.A][e.B] = true
 		m[e.B][e.A] = true
 	}
