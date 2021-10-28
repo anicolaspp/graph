@@ -17,6 +17,11 @@ func Gen(size int) []*G {
 	for i := 2; i <= size; i++ {
 		ch := make(chan []*G)
 
+		// For each graph of size n - 1, we can add a node N and generate
+		// multiple new graphs of size n.
+		//
+		// If we have k graph of size n - 1, then we start k async processes
+		// where each of them creates multiple graphs by adding new node N.
 		for j := 0; j < len(graphs[i-1]); j++ {
 			// Async graph generation.
 			go genUsing(graphs[i-1][j], i, ch)
@@ -27,6 +32,11 @@ func Gen(size int) []*G {
 			toAdd := <-ch
 			graphs[i] = append(graphs[i], toAdd...)
 		}
+
+		// Since the number of graphs exponentially increases, let's remove
+		// the generate i - 1 since we don't need it any more, and save some
+		// memory.
+		delete(graphs, i-1)
 	}
 
 	ch := make(chan *G)
