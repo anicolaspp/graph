@@ -27,11 +27,31 @@ func (g *G) Nodes() []int {
 	return res
 }
 
+// Size the number of nodes in the graph G.
+func (g *G) Size() int {
+	return len(g.Nodes())
+}
+
 // Cp copies the Graph G, to avoid issues with pass by values/reference.
 func (g *G) Cp() *G {
 	return &G{
 		Es: g.Es,
 	}
+}
+
+// ToMatrix converts G to a Adjacency matrix representation.
+func (g *G) ToMatrix() [][]bool {
+	n := g.Size()
+	m := make([][]bool, n)
+
+	for _, e := range g.Es {
+		if m[e.A] == nil {
+			m[e.A] = make([]bool, n)
+		}
+		m[e.A][e.B] = true
+	}
+
+	return m
 }
 
 // String is a string representation of the graph G.
