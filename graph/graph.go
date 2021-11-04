@@ -8,7 +8,7 @@ import (
 
 // G is a graph represented by a list of edges.
 type G struct {
-	Es []E // List of edges.
+	Es []*E // List of edges.
 }
 
 // Nodes returns the unique set of nodes [1..n]
