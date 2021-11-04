@@ -1,6 +1,11 @@
 package graph
 
+import (
+	"sync"
+)
+
 type Pool struct {
+	mu sync.Mutex
 	edges map[string]*E
 }
 
@@ -17,13 +22,16 @@ func (p *Pool) Get(a, b int) *E {
 		A: a,
 		B: b,
 	}
-
+	
+	p.mu.Lock()
+	
 	str := e.String()
 	v, ok := p.edges[str]
 	if !ok {
 		p.edges[str] = e
-		return e
+		v = e
 	}
 
+	p.mu.Unlock()
 	return v
 }
