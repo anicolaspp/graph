@@ -10,7 +10,7 @@ func NewPool() *Pool {
 	}
 }
 
-// Get try finding a matching edge for the given values and return it.
+// Get tries finding a matching edge for the given values and return it.
 // A new edge is created and added to the pool when needed.
 func (p *Pool) Get(a, b int) *E {
 	e := &E{
