@@ -52,7 +52,7 @@ func (g *G) ToMatrix() [][]bool {
 			m[e.B] = make([]bool, n)
 		}
 		m[e.A][e.B] = true
-		m[e.B][e.A] = true
+		// m[e.B][e.A] = true
 	}
 
 	return m

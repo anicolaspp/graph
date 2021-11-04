@@ -5,6 +5,10 @@ import (
 	"sort"
 )
 
+func gen(size int) {
+
+}
+
 // Gen generates all connected graphs of given size.
 // G(n) = AllGraphsOfSize(n - 1) + add(n).
 func Gen(size int) []*G {
@@ -27,6 +31,9 @@ func Gen(size int) []*G {
 		for j := 0; j < k; j++ {
 			// k async processes.
 			go genUsing(graphs[n-1][j], n, ch)
+
+			// Setting the used value (graph) to nil improves memory.
+			graphs[n-1][j] = nil
 		}
 
 		// Aggregates all graph from all parallel processes.
@@ -174,4 +181,9 @@ func (l List) Insert(v int, i int) List {
 	result := append(l[:i+1], l[i:]...)
 	result[i] = v
 	return result
+}
+
+type LevelItem struct {
+	Level int
+	G     *G
 }
