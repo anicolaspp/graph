@@ -5,13 +5,17 @@ import (
 	"sort"
 )
 
+var (
+	pool = NewPool()
+)
+
 // Gen generates all connected graphs of given size.
 // G(n) = AllGraphsOfSize(n - 1) + add(n).
 func Gen(size int) []*G {
 	graphs := map[int][]*G{}
 	graphs[1] = []*G{
 		&G{
-			Es: []E{{1, 1}},
+			Es: []*E{pool.Get(1, 1)},
 		},
 	}
 	for i := 2; i <= size; i++ {
@@ -27,7 +31,15 @@ func Gen(size int) []*G {
 		for j := 0; j < k; j++ {
 			// k async processes.
 			go genUsing(graphs[n-1][j], n, ch)
+
+			// Setting the used value (graph) to nil improves memory.
+			graphs[n-1][j] = nil
 		}
+
+		// Since the number of graphs exponentially increases, let's remove
+		// the generation n - 1 since we don't need it any more, and save some
+		// (a lot) of memory.
+		delete(graphs, n-1)
 
 		// Aggregates all graph from all parallel processes.
 		// Reads output from the k async processes.
@@ -35,11 +47,6 @@ func Gen(size int) []*G {
 			toAdd := <-ch
 			graphs[n] = append(graphs[n], toAdd...)
 		}
-
-		// Since the number of graphs exponentially increases, let's remove
-		// the generation n - 1 since we don't need it any more, and save some
-		// (a lot) of memory.
-		delete(graphs, n-1)
 	}
 
 	ch := make(chan *G)
@@ -62,7 +69,7 @@ func genUsing(g *G, i int, ch chan<- []*G) {
 }
 
 func clean(g *G, ch chan<- *G) {
-	m := map[string]E{}
+	m := map[string]*E{}
 	for _, e := range g.Es {
 		if _, ok := m[e.String()]; !ok && e.String() != "(1,1)" {
 			m[e.String()] = e
@@ -91,10 +98,10 @@ func addE(g *G, n int, c int) []*G {
 
 	res := []*G{}
 	for _, v := range f.F {
-		edges := []E{}
+		edges := []*E{}
 		edges = append(edges, g.Es...)
 		for _, node := range v {
-			edges = append(edges, E{node, n})
+			edges = append(edges, pool.Get(node, n))
 		}
 
 		res = append(res, &G{edges})
@@ -174,4 +181,9 @@ func (l List) Insert(v int, i int) List {
 	result := append(l[:i+1], l[i:]...)
 	result[i] = v
 	return result
+}
+
+type LevelItem struct {
+	Level int
+	G     *G
 }

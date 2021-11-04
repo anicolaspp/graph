@@ -8,7 +8,7 @@ import (
 
 // G is a graph represented by a list of edges.
 type G struct {
-	Es []E // List of edges.
+	Es []*E // List of edges.
 }
 
 // Nodes returns the unique set of nodes [1..n]
@@ -52,7 +52,7 @@ func (g *G) ToMatrix() [][]bool {
 			m[e.B] = make([]bool, n)
 		}
 		m[e.A][e.B] = true
-		m[e.B][e.A] = true
+		// m[e.B][e.A] = true
 	}
 
 	return m
