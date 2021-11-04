@@ -24,14 +24,14 @@ func (p *Pool) Get(a, b int) *E {
 	}
 	
 	p.mu.Lock()
+	defer p.mu.Unlock()	
 	
 	str := e.String()
 	v, ok := p.edges[str]
 	if !ok {
 		p.edges[str] = e
-		v = e
+		return e
 	}
 
-	p.mu.Unlock()
 	return v
 }
