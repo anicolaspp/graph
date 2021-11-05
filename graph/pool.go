@@ -5,13 +5,12 @@ import (
 )
 
 type Pool struct {
-	mu sync.Mutex
-	edges map[string]*E
+	edges sync.Map
 }
 
 func NewPool() *Pool {
 	return &Pool{
-		edges: map[string]*E{},
+		edges: sync.Map{},
 	}
 }
 
@@ -22,16 +21,8 @@ func (p *Pool) Get(a, b int) *E {
 		A: a,
 		B: b,
 	}
-	
-	p.mu.Lock()
-	defer p.mu.Unlock()	
-	
-	str := e.String()
-	v, ok := p.edges[str]
-	if !ok {
-		p.edges[str] = e
-		return e
-	}
 
-	return v
+	str := e.String()
+	v, _ := p.edges.LoadOrStore(str, e) //p.edges[str]
+	return v.(*E)
 }
