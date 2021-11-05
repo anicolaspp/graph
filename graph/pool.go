@@ -23,6 +23,6 @@ func (p *Pool) Get(a, b int) *E {
 	}
 
 	str := e.String()
-	v, _ := p.edges.LoadOrStore(str, e) //p.edges[str]
+	v, _ := p.edges.LoadOrStore(str, e)
 	return v.(*E)
 }

@@ -11,7 +11,7 @@ func main() {
 
 	fmt.Println("Running=======")
 
-	gs := graph.Gen(7)
+	gs := graph.Gen(4)
 
 	fmt.Println("=======")
 	fmt.Println(len(gs))
